@@ -19,6 +19,9 @@ int main() {
 		textFile >> firstName;
 		textFile >> lastName;
 
+		//editing file
+		
+
 
 		int letterArray[26] = { 0,0,0,0,0,0,0,0,
 								0,0,0,0,0,0,0,0,

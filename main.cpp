@@ -33,6 +33,23 @@ int main() {
 	getline(textFile, bookInfo.title);
 	textFile >> bookInfo.firstName;
 	textFile >> bookInfo.lastName;
+	textFile >> currWord;
+
+	/*
+    std::streampos currPos = textFile.tellg();
+    //std::cout << currPos;
+	while(textFile >> currWord){
+		bookInfo.wordCount++;
+	}
+
+    textFile.seekg(currPos);
+
+    while(getline(textFile, currWord)){
+        bookInfo.lineCount++;
+        getline(textFile, currWord);
+        outputFile << currWord;
+    }
+	*/
 	
 	outputFile << "Book Title: " << bookInfo.title << std::endl;
 	outputFile << "Author Name: " << bookInfo.firstName << " " << bookInfo.lastName << std::endl;

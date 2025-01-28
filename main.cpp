@@ -2,69 +2,86 @@
 #include<fstream>
 #include<string>
 
-struct BookInfo{
-	public:
-		std::string title;
-		std::string firstName;
-		std::string lastName;
-		int wordCount;
-		int letterFrequency;
-		int lineCount;
+struct BookInfo {
+public:
+	std::string title;
+	std::string firstName;
+	std::string lastName;
+	int wordCount;
+	int letterFrequency;
+	int lineCount;
 };
 
-//working notes: look to turn current main funtion into a void and re-write the main funtion to prompt user to input a first book and then the second book if they wish//
+
+void bookCat(std::string, char, std::ofstream& outputFile);
 
 int main() {
 	std::string fileName;
+	std::ofstream outputFile ("CardCatalog.txt", std::ios::app);
+
 	std::cout << "What is the file you wish to open?" << std::endl;
 	std::cin >> fileName;
+	
+	std::cout << "Would you like the frequencies of each letter? y/n " << std::endl;
+	char promptFreq;
+	std::cin >> promptFreq;
+
+	bookCat(fileName, promptFreq, outputFile);
+
+	std::cout << "Would you like to catalog another book? y/n " << std::endl;
+	char promptAnother = 'y';
+	std::cin >> promptAnother;
+
+	while (promptAnother == 'y') {
+		std::cout << "What is the file you wish to open?" << std::endl;
+		std::cin >> fileName;
+
+		std::cout << "Would you like the frequencies of each letter? y/n " << std::endl;
+		char promptFreq;
+		std::cin >> promptFreq;
+
+		bookCat(fileName, promptFreq, outputFile);
+
+		std::cout << "Would you like to catalog another book? y/n " << std::endl;
+		std::cin >> promptAnother;
+	} 
+
+	outputFile.close();
+
+	return 0;
+}
+
+void bookCat(std::string fileName, char freqPrompt, std::ofstream& outputFile) {
+
 	std::ifstream textFile(fileName);
-	std::ofstream outputFile("CardCatalog.txt");
-    
-	if (textFile.fail()){
+
+	if (textFile.fail()) {
 		std::cout << "Failed to open file" << std::endl;
 		exit(0);
-    	} else {
-		std::cout << "Worked!" << std::endl;
-    	}
+	}
+	else {
+	}
 
 	//calling on the structure//
 	BookInfo bookInfo;
-	    
+
 	getline(textFile, bookInfo.title);
 	textFile >> bookInfo.firstName;
 	textFile >> bookInfo.lastName;
-	textFile >> currWord;
 
-	/*
-    std::streampos currPos = textFile.tellg();
-    //std::cout << currPos;
-	while(textFile >> currWord){
-		bookInfo.wordCount++;
-	}
-
-    textFile.seekg(currPos);
-
-    while(getline(textFile, currWord)){
-        bookInfo.lineCount++;
-        getline(textFile, currWord);
-        outputFile << currWord;
-    }
-	*/
-	
 	outputFile << "Book Title: " << bookInfo.title << std::endl;
 	outputFile << "Author Name: " << bookInfo.firstName << " " << bookInfo.lastName << std::endl;
 	outputFile << "First Name: " << bookInfo.firstName << std::endl;
 	outputFile << "Last Name: " << bookInfo.lastName << std::endl;
 
-	std::string contentsLine;
-	getline(textFile, contentsLine);
-	textFile>>contentsLine;
+	//ignores empty lines//
+	std::string line;
+	while (line == "") {
+		getline(textFile, line);
+	}
 
 	//portion of the program that prompts the reader if they want to see the letter frequencies//
-	std::cout << "Would you like the frequencies of each letter? y/n ";
-	char freqPrompt;
-	std::cin >> freqPrompt;
+
 	if (freqPrompt == 'y') {
 		//program for letter frequencies//
 		int letterArray[26] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
@@ -75,26 +92,24 @@ int main() {
 		//int charInt = static_cast<int>(character) - 'a';
 		while (textFile.get(character)) {
 			char lowerChar = std::tolower(character);
-			if (!(isspace(lowerChar)||ispunct(lowerChar))) {
-				letterArray[(lowerChar-'a')]++;
-				std::cout << "increased " << lowerChar << std::endl;
+			if (!(isspace(lowerChar) || ispunct(lowerChar))) {
+				letterArray[(lowerChar - 'a')]++;
 				letterCount++;
 			}
 		}
 		for (int ct = 0; ct < 26; ct++) {
-			character = ct; 
+			character = ct;
 			double frequency = 100.00 * static_cast<double>(letterArray[character]) / static_cast<double>(letterCount);
-			std::cout << letCharArray[ct] << ": " << frequency << "%" << std::endl;
+			outputFile << letCharArray[ct] << ": " << frequency << "%" << std::endl;
 		}
-	}else if (freqPrompt != 'n') {
+		outputFile << "\n";
+	}
+	else if (freqPrompt != 'n') {
 		std::cout << "invalid response. Please exit the program and try again." << std::endl;
 	}
 	else if (freqPrompt == 'n') {
 		std::cout << "alright, no frequencies for you!" << std::endl;
 	}
-	   
-	textFile.close();
-   	outputFile.close();
 
-	return 0;
+	textFile.close();
 }

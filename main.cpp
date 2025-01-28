@@ -12,6 +12,7 @@ public:
 	int lineCount;
 };
 
+//working notes: look to turn current main funtion into a void and re-write the main funtion to prompt user to input a first book and then the second book if they wish//
 
 void bookCat(std::string, char, std::ofstream& outputFile);
 
@@ -53,13 +54,15 @@ int main() {
 
 void bookCat(std::string fileName, char freqPrompt, std::ofstream& outputFile) {
 
+
 	std::ifstream textFile(fileName);
 
 	if (textFile.fail()) {
-		std::cout << "Failed to open file" << std::endl;
-		exit(0);
+		std::cout << "Failed to open file. Please re-enter prompts after opting to put in a new entry." << std::endl;
+		return;
 	}
 	else {
+		std::cout << "Worked!" << std::endl;
 	}
 
 	//calling on the structure//
@@ -102,7 +105,7 @@ void bookCat(std::string fileName, char freqPrompt, std::ofstream& outputFile) {
 			double frequency = 100.00 * static_cast<double>(letterArray[character]) / static_cast<double>(letterCount);
 			outputFile << letCharArray[ct] << ": " << frequency << "%" << std::endl;
 		}
-		outputFile << "\n";
+
 	}
 	else if (freqPrompt != 'n') {
 		std::cout << "invalid response. Please exit the program and try again." << std::endl;
@@ -110,6 +113,8 @@ void bookCat(std::string fileName, char freqPrompt, std::ofstream& outputFile) {
 	else if (freqPrompt == 'n') {
 		std::cout << "alright, no frequencies for you!" << std::endl;
 	}
+
+	outputFile << "\n";
 
 	textFile.close();
 }

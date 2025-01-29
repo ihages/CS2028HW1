@@ -54,6 +54,21 @@ int main() {
 
 	return 0;
 }
+	
+    
+void countWords(std::ifstream &textFile) {
+	bookInfo.wordCount = 0;
+	while(textFile >> currWord){
+		bookInfo.wordCount++;
+	}
+}
+
+void countLines(std::ifstream &textFile) {
+	bookInfo.lineCount = 0;
+	while(getline(textFile, currWord)){
+		bookInfo.lineCount++;
+	}
+}
 
 void bookCat(std::ifstream &textFile, std::ofstream& outputFile) {
 
@@ -69,8 +84,17 @@ void bookCat(std::ifstream &textFile, std::ofstream& outputFile) {
 	outputFile << "First Name: " << bookInfo.firstName << std::endl;
 	outputFile << "Last Name: " << bookInfo.lastName << std::endl;
 
+	std::streampos cursorPos = textFile.tellg();
+
 	outputFile << std::endl;
 
+	countWords(textFile);
+	
+	textFile.clear();
+    textFile.seekg(cursorPos, std::ios::beg);
+
+	countLines(textFile);
+	
 	textFile.close();
 }
 

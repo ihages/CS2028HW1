@@ -6,6 +6,6 @@ public:
 	std::string firstName;
 	std::string lastName;
 	int wordCount;
-	double letterFrequency;
+	double letterFrequency[26];
 	int lineCount;
 };

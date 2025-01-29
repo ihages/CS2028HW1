@@ -176,6 +176,8 @@ void letterFreq(char freqPrompt, std::ifstream &textFile, std::ofstream& outputF
 		outputFile << "Letter Frequency:" << std::endl;
 		for (int ct = 0; ct < 26; ct++) {
 			character = ct;
+			//Tried changing letterFrequency to bookInfo.letterFrequency, but it wasn't using the right amount of float numbers
+			//Couldnt get letterFrequency to save as a array
 			double letterFrequency = 100.00 * static_cast<double>(letterArray[character]) / static_cast<double>(letterCount);
 			outputFile << letCharArray[ct] << ": " << letterFrequency << "%" << std::endl;
 		}

@@ -8,13 +8,7 @@ void bookCat(std::ifstream& textFile, std::ofstream& outputFile, char promptFreq
 void letterFreq(char promptFreq, std::ifstream &textFile, std::ofstream& outputFile, BookInfo bookInfo);
 
 int main() {
-	/*Open, then close "CardCatalog.txt" to clear it*/
-	std::ofstream outputFile("CardCatalog.txt", std::ios::trunc);
-
-    if (outputFile.is_open()){
-        outputFile.close();
-        outputFile.open("CardCatalog.txt", std::ios::app);
-    }
+	std::ofstream outputFile("CardCatalog.txt", std::ios::app);
 	
 	char promptAnother = 'y';
 
@@ -159,10 +153,10 @@ void letterFreq(char freqPrompt, std::ifstream &textFile, std::ofstream& outputF
 		textFile >> contentsLine;
 
 		//program for letter frequencies//
-		int letterArray[26] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+		double letterArray[26] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 		char letCharArray[26] = { 'a','b','c','d','e','f','g','h','i','j',
 			'k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' };
-		int letterCount{ 0 };
+		double letterCount{ 0 };
 		char character{ 0 };
 		//int charInt = static_cast<int>(character) - 'a';
 		while (textFile.get(character)) {
@@ -173,13 +167,12 @@ void letterFreq(char freqPrompt, std::ifstream &textFile, std::ofstream& outputF
 				letterCount++;
 			}
 		}
+		bookInfo.letterFrequency = 0.0;
 		outputFile << "Letter Frequency:" << std::endl;
 		for (int ct = 0; ct < 26; ct++) {
 			character = ct;
-			//Tried changing letterFrequency to bookInfo.letterFrequency, but it wasn't using the right amount of float numbers
-			//Couldnt get letterFrequency to save as a array
-			double letterFrequency = 100.00 * static_cast<double>(letterArray[character]) / static_cast<double>(letterCount);
-			outputFile << letCharArray[ct] << ": " << letterFrequency << "%" << std::endl;
+			bookInfo.letterFrequency = 100.0000 * static_cast<double>(letterArray[character]) / letterCount;
+			outputFile << letCharArray[ct] << ": " << std::setprecision(4) << bookInfo.letterFrequency << "%" << std::endl;
 		}
         //std::cout << "Total Letters: " << letterCount << std::endl;
 	}

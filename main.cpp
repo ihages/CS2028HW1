@@ -1,23 +1,20 @@
-#include<iostream>
-#include<fstream>
-#include<string>
-
-struct BookInfo {
-public:
-	std::string title;
-	std::string firstName;
-	std::string lastName;
-	int wordCount;
-	int letterFrequency;
-	int lineCount;
-};
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "BookInfo.h"
 
 
 void bookCat(std::ifstream& textFile, std::ofstream& outputFile);
 void letterFreq(char, std::string);
 
 int main() {
-	std::ofstream outputFile("CardCatalog.txt", std::ios::app);
+	std::ofstream outputFile("CardCatalog.txt", std::ios::trunc);
+
+    if (outputFile.is_open()){
+        outputFile.close();
+        outputFile.open("CardCatalog.txt", std::ios::app);
+    }
+	
 	char promptAnother = 'y';
 
 	while (promptAnother == 'y') {

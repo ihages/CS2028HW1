@@ -167,12 +167,12 @@ void letterFreq(char freqPrompt, std::ifstream &textFile, std::ofstream& outputF
 				letterCount++;
 			}
 		}
-		bookInfo.letterFrequency = 0.0;
+		
 		outputFile << "Letter Frequency:" << std::endl;
 		for (int ct = 0; ct < 26; ct++) {
 			character = ct;
-			bookInfo.letterFrequency = 100.0000 * static_cast<double>(letterArray[character]) / letterCount;
-			outputFile << letCharArray[ct] << ": " << std::setprecision(4) << bookInfo.letterFrequency << "%" << std::endl;
+			bookInfo.letterFrequency[ct] = 100.0000 * static_cast<double>(letterArray[character]) / letterCount;
+			outputFile << letCharArray[ct] << ": " << std::setprecision(4) << bookInfo.letterFrequency[ct] << "%" << std::endl;
 		}
         //std::cout << "Total Letters: " << letterCount << std::endl;
 	}

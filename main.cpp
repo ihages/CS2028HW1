@@ -4,10 +4,11 @@
 #include "BookInfo.h"
 
 
-void bookCat(std::ifstream& textFile, std::ofstream& outputFile);
-void letterFreq(char, std::string);
+void bookCat(std::ifstream& textFile, std::ofstream& outputFile, char promptFreq);
+void letterFreq(char promptFreq, std::ifstream &textFile, std::ofstream& outputFile, BookInfo bookInfo);
 
 int main() {
+	/*Open, then close "CardCatalog.txt" to clear it*/
 	std::ofstream outputFile("CardCatalog.txt", std::ios::trunc);
 
     if (outputFile.is_open()){
@@ -35,13 +36,14 @@ int main() {
 			}
 		}
 
-		bookCat(textFile, outputFile);
+		
 
 		std::cout << "Would you like the frequencies of each letter? y/n " << std::endl;
 		char promptFreq;
 		std::cin >> promptFreq;
-
-		letterFreq(promptFreq, fileName);
+		
+		bookCat(textFile, outputFile, promptFreq);
+		
 
 		std::cout << "Would you like to catalog another book? y/n " << std::endl;
 		std::cin >> promptAnother;
@@ -52,7 +54,7 @@ int main() {
 	return 0;
 }
 	
-    
+/*Count the number of words that occur in the body of the text, starts after "Contents:" line*/  
 void countWords(std::ifstream &textFile, BookInfo &bookInfo) {
 	
     //ignores empty lines//
@@ -75,8 +77,10 @@ void countWords(std::ifstream &textFile, BookInfo &bookInfo) {
 		bookInfo.wordCount++;
 	}
 }
-
+/*Count the number of lines in the body of text, ignores empty lines, and starts afer the "Contents: line"*/
 void countLines(std::ifstream &textFile, BookInfo &bookInfo) {
+
+	//std::cout << "Entered countLines" << std::endl;
 	//ignores empty lines
     std::string line;
     while (line == "") {
@@ -97,7 +101,7 @@ void countLines(std::ifstream &textFile, BookInfo &bookInfo) {
 	}
 }
 
-void bookCat(std::ifstream &textFile, std::ofstream& outputFile) {
+void bookCat(std::ifstream &textFile, std::ofstream& outputFile, char promptFreq) {
 
 	//calling on the structure//
 	BookInfo bookInfo;
@@ -106,30 +110,38 @@ void bookCat(std::ifstream &textFile, std::ofstream& outputFile) {
 	textFile >> bookInfo.firstName;
 	textFile >> bookInfo.lastName;
 
-    std::streampos cursorPos = textFile.tellg();
+	outputFile << "Book Title: " << bookInfo.title <<  std::endl;
+	outputFile << "Author Name: " << bookInfo.firstName << " " << bookInfo.lastName <<  std::endl;
+	outputFile << "First Name: " << bookInfo.firstName << std::endl;
+	outputFile << "Last Name: " << bookInfo.lastName << std::endl;
 
-	outputFile << std::endl;
+	std::streampos cursorPos = textFile.tellg();
 
 	countWords(textFile,bookInfo);
-	
+
+    outputFile << "Word Count: " << bookInfo.wordCount << std::endl;
+
 	textFile.clear();
     textFile.seekg(cursorPos, std::ios::beg);
 
 	countLines(textFile,bookInfo);
 
-	outputFile << "Book Title: " << bookInfo.title << std::endl;
-	outputFile << "Author Name: " << bookInfo.firstName << " " << bookInfo.lastName << std::endl;
-	outputFile << "First Name: " << bookInfo.firstName << std::endl;
-	outputFile << "Last Name: " << bookInfo.lastName << std::endl;
-    outputFile << "Word Count: " << bookInfo.wordCount << std::endl;
-    outputFile << "Line Count: " << bookInfo.lineCount << std::endl;
-	
+	textFile.clear();
+    textFile.seekg(cursorPos, std::ios::beg);
+
+	letterFreq(promptFreq,textFile,outputFile,bookInfo);
+	//std::cout << "Exited letterFreq" << std::endl;
+
+    outputFile << "Line Count: " << bookInfo.lineCount <<  std::endl;
+
+	outputFile << std::endl;
 	textFile.close();
 }
 
-void letterFreq(char freqPrompt, std::string fileName){
-	
-	std::ifstream textFile(fileName);
+/*Counts the amount of letters in the body of the text, then finds the frequency of each letter occuring
+  starts after the "Contents:" line. 
+  Ignores empty lines, and ignores any punctuation*/
+void letterFreq(char freqPrompt, std::ifstream &textFile, std::ofstream& outputFile, BookInfo bookInfo){
 
 	//portion of the program that prompts the reader if they want to see the letter frequencies//
 
@@ -161,10 +173,11 @@ void letterFreq(char freqPrompt, std::string fileName){
 				letterCount++;
 			}
 		}
+		outputFile << "Letter Frequency:" << std::endl;
 		for (int ct = 0; ct < 26; ct++) {
 			character = ct;
-			double frequency = 100.00 * static_cast<double>(letterArray[character]) / static_cast<double>(letterCount);
-			std::cout << letCharArray[ct] << ": " << frequency << "%" << std::endl;
+			double letterFrequency = 100.00 * static_cast<double>(letterArray[character]) / static_cast<double>(letterCount);
+			outputFile << letCharArray[ct] << ": " << letterFrequency << "%" << std::endl;
 		}
         //std::cout << "Total Letters: " << letterCount << std::endl;
 	}

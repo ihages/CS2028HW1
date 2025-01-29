@@ -58,6 +58,7 @@ int main() {
     
 void countWords(std::ifstream &textFile) {
 	bookInfo.wordCount = 0;
+	string currWord;
 	while(textFile >> currWord){
 		bookInfo.wordCount++;
 	}
@@ -65,6 +66,7 @@ void countWords(std::ifstream &textFile) {
 
 void countLines(std::ifstream &textFile) {
 	bookInfo.lineCount = 0;
+	string currWord;
 	while(getline(textFile, currWord)){
 		bookInfo.lineCount++;
 	}

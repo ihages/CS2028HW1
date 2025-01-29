@@ -56,19 +56,47 @@ int main() {
 }
 	
     
-void countWords(std::ifstream &textFile) {
-	bookInfo.wordCount = 0;
-	string currWord;
+void countWords(std::ifstream &textFile, BookInfo &bookInfo) {
+	
+    //ignores empty lines//
+    std::string line;
+    while (line == "") {
+        getline(textFile, line);
+        //std::cout << "Skipping Empty Line: " << line << std::endl;
+    }
+
+    //ignores line that says "Contents:"
+    std::string contentsLine;
+    getline(textFile, contentsLine);
+    //std::cout << "Skipping Contents Line: " << contentsLine << std::endl;
+    
+
+    bookInfo.wordCount = 0;
+    std::string currWord;
 	while(textFile >> currWord){
+        //std::cout << "wordCount: " << currWord << std::endl;
 		bookInfo.wordCount++;
 	}
 }
 
-void countLines(std::ifstream &textFile) {
-	bookInfo.lineCount = 0;
-	string currWord;
+void countLines(std::ifstream &textFile, BookInfo &bookInfo) {
+	//ignores empty lines
+    std::string line;
+    while (line == "") {
+        getline(textFile, line);
+    }
+
+    //ignores line that says "Contents:"
+    std::string contentsLine;
+    getline(textFile, contentsLine);
+    
+    bookInfo.lineCount = 0;
+    std::string currWord;
 	while(getline(textFile, currWord)){
-		bookInfo.lineCount++;
+        if(currWord != ""){
+            //std::cout << "lineCount: " << currWord << std::endl;
+		    bookInfo.lineCount++;
+        }
 	}
 }
 
@@ -81,21 +109,23 @@ void bookCat(std::ifstream &textFile, std::ofstream& outputFile) {
 	textFile >> bookInfo.firstName;
 	textFile >> bookInfo.lastName;
 
-	outputFile << "Book Title: " << bookInfo.title << std::endl;
-	outputFile << "Author Name: " << bookInfo.firstName << " " << bookInfo.lastName << std::endl;
-	outputFile << "First Name: " << bookInfo.firstName << std::endl;
-	outputFile << "Last Name: " << bookInfo.lastName << std::endl;
-
-	std::streampos cursorPos = textFile.tellg();
+    std::streampos cursorPos = textFile.tellg();
 
 	outputFile << std::endl;
 
-	countWords(textFile);
+	countWords(textFile,bookInfo);
 	
 	textFile.clear();
     textFile.seekg(cursorPos, std::ios::beg);
 
-	countLines(textFile);
+	countLines(textFile,bookInfo);
+
+	outputFile << "Book Title: " << bookInfo.title << std::endl;
+	outputFile << "Author Name: " << bookInfo.firstName << " " << bookInfo.lastName << std::endl;
+	outputFile << "First Name: " << bookInfo.firstName << std::endl;
+	outputFile << "Last Name: " << bookInfo.lastName << std::endl;
+    outputFile << "Word Count: " << bookInfo.wordCount << std::endl;
+    outputFile << "Line Count: " << bookInfo.lineCount << std::endl;
 	
 	textFile.close();
 }
@@ -129,6 +159,7 @@ void letterFreq(char freqPrompt, std::string fileName){
 		while (textFile.get(character)) {
 			char lowerChar = std::tolower(character);
 			if (islower(lowerChar)) {
+                //std::cout << "Char: " << lowerChar << std::endl;
 				letterArray[(lowerChar - 'a')]++;
 				letterCount++;
 			}
@@ -138,6 +169,7 @@ void letterFreq(char freqPrompt, std::string fileName){
 			double frequency = 100.00 * static_cast<double>(letterArray[character]) / static_cast<double>(letterCount);
 			std::cout << letCharArray[ct] << ": " << frequency << "%" << std::endl;
 		}
+        //std::cout << "Total Letters: " << letterCount << std::endl;
 	}
 	else if (freqPrompt != 'n') {
 		std::cout << "invalid response has been assumed to be a 'no'" << std::endl;
